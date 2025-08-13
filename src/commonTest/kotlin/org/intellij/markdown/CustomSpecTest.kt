@@ -252,4 +252,59 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             paragraph { text("some end paragraph") }
         }
     )
+
+    @Test
+    fun testHLine1() = doTest(
+        markdown =
+            "-----\n" +
+            "       -----\n" +
+            "-----      \n" +
+            "     -----     \n" +
+            "---\n" +
+            "-------\n" +
+            "test ----- \n" +
+            "-----     test\n",
+        html = html {
+            hr()
+            hr()
+            hr()
+            hr()
+            paragraph {
+                text("---")
+                br()
+                text("-------")
+                br()
+                text("test -----")
+                br()
+                text("----- test")
+            }
+        }
+    )
+
+    @Test
+    fun testHLine2() = doTest(
+        markdown =
+            "## heading 1\n" +
+            "-----\n" +
+            "some text 1\n" +
+            "-----\n" +
+            "some text 2\n" +
+            "-- A\n" +
+            "--- B\n" +
+            "-----\n" +
+            "--- C\n",
+        html = html {
+            heading(1) { text("heading 1") }
+            hr()
+            paragraph { text("some text 1") }
+            hr()
+            paragraph { text("some text 2") }
+            ulist {
+                item { text("A") }
+                ulist { item { text("B") } }
+            }
+            hr()
+            ulist { ulist { item { text("C") } } }
+        }
+    )
 }

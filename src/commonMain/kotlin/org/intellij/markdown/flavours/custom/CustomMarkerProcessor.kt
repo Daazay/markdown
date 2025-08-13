@@ -1,6 +1,8 @@
 package org.intellij.markdown.flavours.custom
 
 import org.intellij.markdown.flavours.custom.heading.CustomHeadingBlockProvider
+import org.intellij.markdown.flavours.custom.hline.CustomHLineBlockProvider
+import org.intellij.markdown.flavours.custom.hline.CustomHLineMarkerBlock
 import org.intellij.markdown.flavours.custom.list.CustomUnorderedListBlockProvider
 import org.intellij.markdown.flavours.custom.paragraph.CustomParagraphBlockProvider
 import org.intellij.markdown.parser.LookaheadText
@@ -20,6 +22,7 @@ class CustomMarkerProcessor(
     private val blockProviders: List<MarkerBlockProvider<MarkerProcessor.StateInfo>> = listOf(
         CustomHeadingBlockProvider(),
         CustomUnorderedListBlockProvider(),
+        CustomHLineBlockProvider(),
     )
 
     override fun getMarkerBlockProviders(): List<MarkerBlockProvider<StateInfo>> {

@@ -125,7 +125,7 @@ class CustomHtmlContentBuilder(
     fun paragraph(block: CustomParagraphContent.() -> Unit) = sb.append(CustomParagraphContentBuilder(margin).apply(block))
     fun ulist(block: CustomUListContentBuilder.() -> Unit) = sb.append(CustomUListContentBuilder(margin, false).apply(block))
     fun olist(start: Int, block: CustomOListContentBuilder.() -> Unit) = sb.append(CustomOListContentBuilder(margin, start, false).apply(block))
-    fun hr() = sb.append("<hr style=\\\"margin:${margin}px 0;height:2px;border:none;color:#333;background-color:#333;\\\">")
+    fun hr() = sb.append("<hr style=\"margin:${margin}px 0;height:2px;border:none;color:#333;background-color:#333;\">")
 }
 
 fun html(margin: Int = 16, block: CustomHtmlContentBuilder.() -> Unit): String =

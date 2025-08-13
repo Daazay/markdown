@@ -65,7 +65,11 @@ class CustomFlavourDescriptor(
         CustomElementTypes.ITALIC to SimpleInlineTagProvider("i", 1, -1),
         CustomElementTypes.STRIKETHROUGH to SimpleInlineTagProvider("del", 1, -1),
         CustomElementTypes.UNDERLINE to SimpleInlineTagProvider("u", 1, -1),
-
+        MarkdownTokenTypes.HORIZONTAL_RULE to object : GeneratingProvider {
+            override fun processNode(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                visitor.consumeTagOpen(node, "hr", "style=\"margin:${margin}px 0;height:2px;border:none;color:#333;background-color:#333;\"")
+            }
+        }
     )
 
     override fun createInlinesLexer(): MarkdownLexer = MarkdownLexer(_CustomLexer())
