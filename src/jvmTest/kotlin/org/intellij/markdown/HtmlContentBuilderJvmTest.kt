@@ -3,7 +3,7 @@ package org.intellij.markdown
 import org.intellij.markdown.html.URI
 import org.junit.Test
 
-class HtmlGeneratorJvmTest : HtmlGeneratorTestBase() {
+class HtmlContentBuilderJvmTest : HtmlGeneratorTestBase() {
     override fun getTestDataPath(): String {
         return getIntellijMarkdownHome() + "/src/jvmTest/resources/data/html"
     }

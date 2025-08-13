@@ -6,6 +6,8 @@ import org.intellij.markdown.ast.ASTNodeBuilder
 import org.intellij.markdown.ast.CompositeASTNode
 import org.intellij.markdown.ast.LeafASTNode
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor
+import org.intellij.markdown.flavours.custom.CustomElementTypes
+import org.intellij.markdown.flavours.custom.CustomTokenTypes
 import org.intellij.markdown.flavours.gfm.GFMTokenTypes
 import org.intellij.markdown.parser.sequentialparsers.LexerBasedTokensCache
 import org.intellij.markdown.parser.sequentialparsers.SequentialParser
@@ -116,6 +118,11 @@ class MarkdownParser @ExperimentalApi constructor(
     private inner class InlineExpandingASTNodeBuilder(text: CharSequence) : ASTNodeBuilder(text) {
         override fun createLeafNodes(type: IElementType, startOffset: Int, endOffset: Int): List<ASTNode> {
             return when (type) {
+                // Custom
+                CustomTokenTypes.HEADING_CONTENT,
+                CustomElementTypes.PARAGRAPH,
+                CustomTokenTypes.UL_ITEM_CONTENT,
+                //
                 MarkdownElementTypes.PARAGRAPH,
                 MarkdownTokenTypes.ATX_CONTENT,
                 MarkdownTokenTypes.SETEXT_CONTENT,

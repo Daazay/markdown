@@ -7,7 +7,7 @@ import org.intellij.markdown.flavours.space.SFMFlavourDescriptor
 import org.intellij.markdown.html.*
 import kotlin.test.*
 
-class HtmlGeneratorCommonTest : HtmlGeneratorTestBase() {
+class HtmlContentBuilderCommonTest : HtmlGeneratorTestBase() {
     override fun getTestDataPath(): String {
         return getIntellijMarkdownHome() + "/${MARKDOWN_TEST_DATA_PATH}/html"
     }
