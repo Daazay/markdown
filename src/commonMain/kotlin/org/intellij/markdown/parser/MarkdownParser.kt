@@ -91,6 +91,8 @@ class MarkdownParser @ExperimentalApi constructor(
         lexer.start(text, textStart, textEnd)
         val tokensCache = LexerBasedTokensCache(lexer)
 
+        println("parsing - \"${text.substring(textStart, textEnd)}\"")
+
         val wholeRange = 0..tokensCache.filteredTokens.size
         val nodes = flavour.sequentialParserManager.runParsingSequence(
             tokensCache = tokensCache,

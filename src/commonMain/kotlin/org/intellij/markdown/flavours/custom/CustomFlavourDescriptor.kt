@@ -6,6 +6,7 @@ import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor
 import org.intellij.markdown.flavours.custom.delimiters.CustomDelimiterParser
+import org.intellij.markdown.flavours.custom.lexer._CustomLexer
 import org.intellij.markdown.html.*
 import org.intellij.markdown.lexer.MarkdownLexer
 import org.intellij.markdown.lexer._MarkdownLexer
@@ -36,7 +37,7 @@ class CustomFlavourDescriptor(
                 visitor.consumeHtml(" ")
             }
         },
-        CustomElementTypes.PARAGRAPH to object : TrimmingInlineHolderProvider() {
+        CustomElementTypes.PARAGRAPH to object : CustomTrimmingInlineHolderProvider() {
             override fun openTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
                 visitor.consumeTagOpen(node, "p", "style=\"margin:${margin}px 0\"")
             }
@@ -44,7 +45,12 @@ class CustomFlavourDescriptor(
                 visitor.consumeTagClose("p")
             }
         },
-        CustomTokenTypes.HEADING_CONTENT to TrimmingInlineHolderProvider(),
+        MarkdownTokenTypes.HARD_LINE_BREAK to object : GeneratingProvider {
+            override fun processNode(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                visitor.consumeTagOpen(node, "br")
+            }
+        },
+        CustomTokenTypes.HEADING_CONTENT to CustomTrimmingInlineHolderProvider(),
         CustomElementTypes.HEADING_1 to SimpleTagProvider("h1"),
         CustomElementTypes.HEADING_2 to SimpleTagProvider("h2"),
         CustomElementTypes.HEADING_3 to SimpleTagProvider("h3"),
@@ -54,7 +60,7 @@ class CustomFlavourDescriptor(
         CustomElementTypes.ULIST to CustomOpenCloseGeneratingProvider("ul", "style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\""),
         CustomElementTypes.ULIST_NESTED to SimpleTagProvider("ul"),
         CustomElementTypes.ULIST_ITEM to SimpleTagProvider("li"),
-        CustomTokenTypes.UL_ITEM_CONTENT to TrimmingInlineHolderProvider(),
+        CustomTokenTypes.UL_ITEM_CONTENT to CustomTrimmingInlineHolderProvider(),
         CustomElementTypes.STRONG to SimpleInlineTagProvider("b", 1, -1),
         CustomElementTypes.ITALIC to SimpleInlineTagProvider("i", 1, -1),
         CustomElementTypes.STRIKETHROUGH to SimpleInlineTagProvider("del", 1, -1),
@@ -62,7 +68,7 @@ class CustomFlavourDescriptor(
 
     )
 
-    override fun createInlinesLexer(): MarkdownLexer = MarkdownLexer(_MarkdownLexer())
+    override fun createInlinesLexer(): MarkdownLexer = MarkdownLexer(_CustomLexer())
 
     override val sequentialParserManager: SequentialParserManager = object : SequentialParserManager() {
         override fun getParserSequence(): List<SequentialParser> {

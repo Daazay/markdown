@@ -59,7 +59,7 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     @Test
     fun testHeadings7() = doTest(
         markdown = "## heading ##      hashes\n",
-        html = html { heading(1) { text("## heading ## hashes") } }
+        html = html { heading(1) { text("heading ## hashes") } }
     )
 
     @Test
@@ -94,6 +94,29 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             paragraph { text("some text") }
             heading(1) { text("heading") }
             paragraph { text("some text") }
+        }
+    )
+
+
+    @Test
+    fun testParagraph5() = doTest(
+        markdown =
+            "paragraph\n" +
+            "paragraph\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "    paragraph\n" +
+            "\n" +
+            "paragraph\n",
+        html = html {
+            paragraph {
+                text("paragraph")
+                br()
+                text("paragraph")
+            }
+            paragraph { text("paragraph") }
+            paragraph { text("paragraph") }
         }
     )
 
@@ -209,9 +232,9 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             "-- C\n" +
             "some end paragraph\n",
         html = html {
-            heading(1) { text("heading 1") }
-            heading(2) { text("heading 2") }
-            paragraph { text("some text") }
+            heading(1) { text("Heading 1") }
+            heading(2) { text("Heading 2") }
+            paragraph { text("some paragraph") }
             paragraph {
                 text("some sentence 1")
                 br()
