@@ -124,6 +124,7 @@ class MarkdownParser @ExperimentalApi constructor(
                 CustomTokenTypes.HEADING_CONTENT,
                 CustomElementTypes.PARAGRAPH,
                 CustomTokenTypes.UL_ITEM_CONTENT,
+                CustomTokenTypes.OL_ITEM_CONTENT,
                 //
                 MarkdownElementTypes.PARAGRAPH,
                 MarkdownTokenTypes.ATX_CONTENT,

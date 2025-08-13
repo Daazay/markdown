@@ -5,7 +5,7 @@ import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.html.OpenCloseGeneratingProvider
 import org.intellij.markdown.html.TrimmingInlineHolderProvider
 
-class CustomOpenCloseGeneratingProvider(
+open class CustomOpenCloseGeneratingProvider(
     val tagName: String,
     val attributes: String? = null,
 ): OpenCloseGeneratingProvider() {

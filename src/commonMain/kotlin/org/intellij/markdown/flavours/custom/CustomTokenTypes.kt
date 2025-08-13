@@ -2,6 +2,7 @@ package org.intellij.markdown.flavours.custom
 
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementType
+import kotlin.jvm.JvmField
 
 object CustomTokenTypes {
     val STRONG_MARKER: IElementType = MarkdownElementType("CUSTOM_STRONG_MARKER_TOK", true)
@@ -15,8 +16,8 @@ object CustomTokenTypes {
     val UL_ITEM_MARKER: IElementType = MarkdownElementType("CUSTOM_UL_ITEM_MARKER_TOK", true)
     val UL_ITEM_CONTENT: IElementType = MarkdownElementType("CUSTOM_UL_ITEM_CONTENT_TOK", true)
 
-    val LINEBREAK: IElementType = MarkdownElementType("CUSTOM_LINEBREAK_TOK", true)
-    val HR: IElementType = MarkdownElementType("CUSTOM_HR_TOK", true)
+    val OL_ITEM_MARKER: IElementType = MarkdownElementType("CUSTOM_OL_ITEM_MARKER_TOK", true)
+    val OL_ITEM_CONTENT: IElementType = MarkdownElementType("CUSTOM_OL_ITEM_CONTENT_TOK", true)
 
     val WHITE_SPACE: IElementType = MarkdownElementType("CUSTOM_WHITE_SPACE_TOK", true)
 }

@@ -4,10 +4,13 @@ import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
+import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor
 import org.intellij.markdown.flavours.custom.delimiters.CustomDelimiterParser
 import org.intellij.markdown.flavours.custom.lexer._CustomLexer
+import org.intellij.markdown.flavours.custom.list.CustomOrderedListMarkerBlock
 import org.intellij.markdown.html.*
+import org.intellij.markdown.lexer.Compat.assert
 import org.intellij.markdown.lexer.MarkdownLexer
 import org.intellij.markdown.lexer._MarkdownLexer
 import org.intellij.markdown.parser.LinkMap
@@ -15,6 +18,7 @@ import org.intellij.markdown.parser.MarkerProcessorFactory
 import org.intellij.markdown.parser.sequentialparsers.EmphasisLikeParser
 import org.intellij.markdown.parser.sequentialparsers.SequentialParser
 import org.intellij.markdown.parser.sequentialparsers.SequentialParserManager
+import kotlin.math.asin
 
 class CustomFlavourDescriptor(
     private val margin: Int = 16,
@@ -61,6 +65,28 @@ class CustomFlavourDescriptor(
         CustomElementTypes.ULIST_NESTED to SimpleTagProvider("ul"),
         CustomElementTypes.ULIST_ITEM to SimpleTagProvider("li"),
         CustomTokenTypes.UL_ITEM_CONTENT to CustomTrimmingInlineHolderProvider(),
+        CustomElementTypes.OLIST to object : OpenCloseGeneratingProvider() {
+            override fun openTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                val start = findStartNumberForOrderedList(node, text)
+                visitor.consumeTagOpen(node, "ol", "start=\"${start}\" style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\"")
+            }
+
+            override fun closeTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                visitor.consumeTagClose("ol")
+            }
+        },
+        CustomElementTypes.OLIST_NESTED to object : OpenCloseGeneratingProvider() {
+            override fun openTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                val start = findStartNumberForOrderedList(node, text)
+                visitor.consumeTagOpen(node, "ol", "start=\"${start}\"")
+            }
+
+            override fun closeTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
+                visitor.consumeTagClose("ol")
+            }
+        },
+        CustomElementTypes.OLIST_ITEM to SimpleTagProvider("li"),
+        CustomTokenTypes.OL_ITEM_CONTENT to CustomTrimmingInlineHolderProvider(),
         CustomElementTypes.STRONG to SimpleInlineTagProvider("b", 1, -1),
         CustomElementTypes.ITALIC to SimpleInlineTagProvider("i", 1, -1),
         CustomElementTypes.STRIKETHROUGH to SimpleInlineTagProvider("del", 1, -1),
@@ -82,4 +108,14 @@ class CustomFlavourDescriptor(
 
     override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?): Map<IElementType, GeneratingProvider>
         = generatingProviders
+
+    private  fun findStartNumberForOrderedList(node: ASTNode, text: String): Int {
+        assert(node.type == CustomElementTypes.OLIST || node.type == CustomElementTypes.OLIST_NESTED)
+
+        val itemNode = node.children.first { it.type == CustomElementTypes.OLIST_ITEM }
+        val markerNode = itemNode.children.find { it.type == CustomTokenTypes.OL_ITEM_MARKER }
+
+        val markerText = markerNode!!.getTextInNode(text).toString()
+        return markerText.takeWhile { it.isDigit() }.toInt()
+    }
 }

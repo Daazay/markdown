@@ -1,6 +1,7 @@
 package org.intellij.markdown
 
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlavourDescriptor(16)) {
     @Test
@@ -217,7 +218,6 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
         }
     )
 
-
     @Test
     fun testUnorderedList7() = doTest(
         markdown =
@@ -307,4 +307,104 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             ulist { ulist { item { text("C") } } }
         }
     )
+
+    @Test
+    fun testOrderedList1() = doTest(
+        markdown =
+            "1.. A\n" +
+            "1.. B\n",
+        html = html { olist(1) {
+            item { text("A") }
+            item { text("B") }
+        } }
+    )
+
+    @Test
+    fun testOrderedList2() = doTest(
+        markdown =
+            "1.. A\n" +
+            "2... B\n" +
+            "1.. C\n",
+        html = html { olist(1) {
+            item { text("A") }
+            olist(2) { item { text("B") } }
+            item { text("C") }
+        } }
+    )
+
+    @Test
+    fun testOrderedList3() = doTest(
+        markdown =
+            "1.. A\n" +
+            "2... B\n" +
+            "3.... C\n",
+        html = html {
+            olist(1) {
+                item { text("A") }
+                olist(2) {
+                    item { text("B") }
+                    olist(3) { item { text("C") } }
+                }
+            }
+        }
+    )
+
+    @Test
+    fun testOrderedList4() = doTest(
+        markdown =
+            "1.. A\n" +
+            "2... B\n" +
+            "3.... C\n" +
+            "2... D\n" +
+            "1.. E\n",
+        html = html {
+            olist(1) {
+                item { text("A") }
+                olist(2) {
+                    item { text("B") }
+                    olist(3) { item { text("C") } }
+                    item { text("D") }
+                }
+                item { text("E") }
+            }
+        }
+    )
+
+    @Test
+    fun testOrderedList5() = doTest(
+        markdown =
+            "1.. A\n" +
+            "2... B\n" +
+            "3.... C\n" +
+            "1.. D\n",
+        html = html {
+            olist(1) {
+                item { text("A") }
+                olist(2) {
+                    item { text("B") }
+                    olist(3) { item { text("C") } }
+                }
+                item { text("D") }
+            }
+        }
+    )
+
+    @Test
+    fun testOrderedList6() {
+        assertTrue(runCatching { doTest(
+            markdown =
+                "3.... A\n" +
+                "2... B\n" +
+                "1.. C\n",
+            html = html {
+                olist(3) {
+                    olist(2) {
+                        olist(1) { item { text("A") } }
+                        item { text("B") }
+                    }
+                    item { text("C") }
+                }
+            }
+        ) }.isFailure)
+    }
 }
