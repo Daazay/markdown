@@ -41,21 +41,16 @@ open class CustomFormattedContentBuilder: CustomHtmlBaseBuilder(), CustomFormatt
         sb.append(value)
     }
 
-    override fun bold(block: CustomFormattedContent.() -> Unit) {
-        sb.append("<b>").append(CustomFormattedContentBuilder().apply(block)).append("</b>")
+    private inline fun wrap(tag: String, block: CustomFormattedContent.() -> Unit) {
+        sb.append("<$tag>")
+            .append(CustomFormattedContentBuilder().apply(block))
+            .append("</$tag>")
     }
 
-    override fun italic(block: CustomFormattedContent.() -> Unit) {
-        sb.append("<i>").append(CustomFormattedContentBuilder().apply(block)).append("</i>")
-    }
-
-    override fun strike(block: CustomFormattedContent.() -> Unit) {
-        sb.append("<del>").append(CustomFormattedContentBuilder().apply(block)).append("</del>")
-    }
-
-    override fun underline(block: CustomFormattedContent.() -> Unit) {
-        sb.append("<u>").append(CustomFormattedContentBuilder().apply(block)).append("</u>")
-    }
+    override fun bold(block: CustomFormattedContent.() -> Unit)      = wrap("b", block)
+    override fun italic(block: CustomFormattedContent.() -> Unit)    = wrap("i", block)
+    override fun strike(block: CustomFormattedContent.() -> Unit)    = wrap("del", block)
+    override fun underline(block: CustomFormattedContent.() -> Unit) = wrap("u", block)
 }
 
 @HtmlDsl

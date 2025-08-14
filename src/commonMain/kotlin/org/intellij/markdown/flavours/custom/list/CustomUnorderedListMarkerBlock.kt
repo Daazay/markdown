@@ -26,11 +26,10 @@ class CustomUnorderedListMarkerBlock(
 ) : MarkerBlockImpl(constraints, productionHolder.mark()) {
     private val initialListLevel = getItemLevel(initialItemRange.first)
     private var currentListLevel = 0
-    // [level, start, end]
-    private val nestingListStack = Stack<Triple<Int, Int, Int>>()
+    private val nestingListStack = Stack<Pair<Int, IntRange>>()
 
     init {
-        openLists(initialListLevel, initialItemRange)
+        require(initialListLevel == currentListLevel) { "Cannot start list with level: $initialListLevel" }
         processItems(initialItemRange)
     }
 
@@ -49,12 +48,17 @@ class CustomUnorderedListMarkerBlock(
         val nextLevel = getItemLevel(itemRange.first)
 
         when {
-            nextLevel > currentListLevel -> openLists(nextLevel, itemRange)
-            nextLevel < currentListLevel -> closeLists(nextLevel, itemRange.second.last)
+            nextLevel > currentListLevel -> {
+                assert(nextLevel == currentListLevel + 1) { "The difference between items cannot be greater than 1 if we open new list" }
+                openList(itemRange)
+            }
+            nextLevel < currentListLevel -> {
+                closeLists(nextLevel, itemRange.second.last)
+            }
             nextLevel == currentListLevel -> {
                 if (nestingListStack.isNotEmpty()) {
-                    val (level, start, oldEnd) = nestingListStack.pop()
-                    nestingListStack.push(Triple(level, start, itemRange.second.last))
+                    val (level, range) = nestingListStack.pop()
+                    nestingListStack.push(level to (range.first..itemRange.second.last))
                 }
             }
         }
@@ -65,7 +69,12 @@ class CustomUnorderedListMarkerBlock(
 
     override fun isInterestingOffset(pos: LookaheadText.Position): Boolean = true
 
-    override fun getDefaultAction(): MarkerBlock.ClosingAction = MarkerBlock.ClosingAction.DONE
+    override fun getDefaultAction(): MarkerBlock.ClosingAction {
+        if (nestingListStack.isNotEmpty()) {
+            closeLists(0, -1)
+        }
+        return MarkerBlock.ClosingAction.DONE
+    }
 
     override fun calcNextInterestingOffset(pos: LookaheadText.Position): Int = pos.nextLineOrEofOffset
 
@@ -84,31 +93,36 @@ class CustomUnorderedListMarkerBlock(
         )
     }
 
-    private fun openLists(toLevel: Int, itemRange: UListItemRange) {
+    private fun openList(itemRange: UListItemRange) {
+        currentListLevel++
         val (markerRange, contentRange) = itemRange
-        while (currentListLevel != toLevel) {
-            currentListLevel++
-            nestingListStack.push(Triple(currentListLevel, markerRange.first, contentRange.last))
-        }
+        nestingListStack.push(currentListLevel to (markerRange.first..contentRange.last))
     }
 
     private fun closeLists(toLevel: Int, currentEnd: Int) {
         val nodes = buildList<SequentialParser.Node> {
             var end: Int? = null
             while (nestingListStack.isNotEmpty() && nestingListStack.peek().first != toLevel) {
-                val (_, start, end2) = nestingListStack.pop()
+                val (_, range) = nestingListStack.pop()
                 if (end == null) {
-                    end = end2
+                    end = range.last
                 }
-                add(SequentialParser.Node(start..end, CustomElementTypes.ULIST_NESTED))
+                add(SequentialParser.Node(range.first..end, CustomElementTypes.ULIST_NESTED))
             }
         }
         if (nestingListStack.isNotEmpty()) {
-            val (level, start, oldEnd) = nestingListStack.pop()
-            nestingListStack.push(Triple(level, start, currentEnd))
+            val (level, range) = nestingListStack.pop()
+            nestingListStack.push(level to (range.first..currentEnd))
         }
         currentListLevel = toLevel
         productionHolder.addProduction(nodes)
+    }
+
+    fun getItemLevel(markerRange: UListMarkerRange): Int {
+        val dashes = markerRange.last - markerRange.first
+        val level = dashes - 2
+        require(level in 0..2) { "Invalid marker dash count: $dashes" }
+        return level
     }
 
     companion object {
@@ -139,13 +153,6 @@ class CustomUnorderedListMarkerBlock(
             val contentRange = (pos.offset + offset..pos.offset + line.length)
 
             return Pair(markerRange, contentRange)
-        }
-
-        fun getItemLevel(markerRange: UListMarkerRange): Int {
-            val dashes = markerRange.last - markerRange.first
-            val level = dashes - 2
-            require(level in 0..2) { "Invalid marker dash count: $dashes" }
-            return level
         }
     }
 }

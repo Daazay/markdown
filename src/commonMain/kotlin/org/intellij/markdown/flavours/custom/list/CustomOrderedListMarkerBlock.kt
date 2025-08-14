@@ -68,7 +68,12 @@ class CustomOrderedListMarkerBlock(
 
     override fun isInterestingOffset(pos: LookaheadText.Position): Boolean = true
 
-    override fun getDefaultAction(): MarkerBlock.ClosingAction = MarkerBlock.ClosingAction.DONE
+    override fun getDefaultAction(): MarkerBlock.ClosingAction {
+        if (nestingListStack.isNotEmpty()) {
+            closeLists(0, -1)
+        }
+        return MarkerBlock.ClosingAction.DONE
+    }
 
     override fun calcNextInterestingOffset(pos: LookaheadText.Position): Int = pos.nextLineOrEofOffset
 

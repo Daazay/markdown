@@ -6,7 +6,14 @@ import kotlin.test.assertTrue
 class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlavourDescriptor(16)) {
     @Test
     fun testHeadings1() = doTest(
-        markdown = "## heading 1\n### heading 2\n#### heading 3\n##### heading 4\n###### heading 5\n####### heading 6\n",
+        markdown = """
+            ## heading 1
+            ### heading 2
+            #### heading 3
+            ##### heading 4
+            ###### heading 5
+            ####### heading 6
+        """.trimIndent(),
         html = html {
             heading(1) { text("heading 1") }
             heading(2) { text("heading 2") }
@@ -19,7 +26,10 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testHeadings2() = doTest(
-        markdown = "# not heading 1\n######## not heading 2\n",
+        markdown = """
+            # not heading 1
+            ######## not heading 2
+            """.trimIndent(),
         html = html { paragraph {
             text("# not heading 1")
             br()
@@ -29,7 +39,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testHeadings3() = doTest(
-        markdown = "##\n##123\n##abc\n",
+        markdown = """
+            ##
+            ##123
+            ##abc
+        """.trimIndent(),
         html = html { paragraph {
             text("##")
             br()
@@ -41,13 +55,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testHeadings4() = doTest(
-        markdown = "## **strong**\n",
+        markdown = "## **strong**",
         html = html { heading(1) { bold { text("strong") } } }
     )
 
     @Test
     fun testHeadings5() = doTest(
-        markdown = "##                     heading                         \n",
+        markdown = "##              heading            \n",
         html = html { heading(1) { text("heading") } }
     )
 
@@ -71,7 +85,10 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testParagraph2() = doTest(
-        markdown = "some text\nsome text",
+        markdown = """
+            some text
+            some text
+        """.trimMargin(),
         html = html { paragraph {
             text("some text")
             br()
@@ -81,7 +98,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testParagraph3() = doTest(
-        markdown = "some text\n\nsome text",
+        markdown = """
+            some text
+            
+            some text
+            """.trimIndent(),
         html = html {
             paragraph { text("some text") }
             paragraph { text("some text") }
@@ -90,7 +111,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testParagraph4() = doTest(
-        markdown = "some text\n## heading\nsome text",
+        markdown = """
+            some text
+            ## heading
+            some text
+        """.trimIndent(),
         html = html {
             paragraph { text("some text") }
             heading(1) { text("heading") }
@@ -101,15 +126,16 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testParagraph5() = doTest(
-        markdown =
-            "paragraph\n" +
-            "paragraph\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "    paragraph\n" +
-            "\n" +
-            "paragraph\n",
+        markdown = """
+            paragraph
+            paragraph
+            
+            
+            
+                     paragraph
+            
+            paragraph
+            """.trimIndent(),
         html = html {
             paragraph {
                 text("paragraph")
@@ -123,9 +149,10 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testUnorderedList1() = doTest(
-        markdown =
-            "-- A\n" +
-            "-- B\n",
+        markdown = """
+            -- A
+            -- B
+        """.trimIndent(),
         html = html { ulist {
             item { text("A") }
             item { text("B") }
@@ -134,10 +161,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testUnorderedList2() = doTest(
-        markdown =
-            "-- A\n" +
-            "--- B\n" +
-            "-- C\n",
+        markdown = """
+            -- A
+            --- B
+            -- C
+            """.trimIndent(),
         html = html { ulist {
             item { text("A") }
             ulist { item { text("B") } }
@@ -147,10 +175,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testUnorderedList3() = doTest(
-        markdown =
-            "-- A\n" +
-            "--- B\n" +
-            "---- C\n",
+        markdown = """
+            -- A
+            --- B
+            ---- C
+            """.trimIndent(),
         html = html {
             ulist {
                 item { text("A") }
@@ -164,12 +193,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testUnorderedList4() = doTest(
-        markdown =
-            "-- A\n" +
-            "--- B\n" +
-            "---- C\n" +
-            "--- D\n" +
-            "-- E\n",
+        markdown = """
+            -- A
+            --- B
+            ---- C
+            --- D
+            -- E
+            """.trimIndent(),
         html = html {
             ulist {
                 item { text("A") }
@@ -185,11 +215,12 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testUnorderedList5() = doTest(
-        markdown =
-            "-- A\n" +
-            "--- B\n" +
-            "---- C\n" +
-            "-- D\n",
+        markdown = """
+            -- A
+            --- B
+            ---- C
+            -- D
+            """.trimIndent(),
         html = html {
             ulist {
                 item { text("A") }
@@ -203,34 +234,41 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     )
 
     @Test
-    fun testUnorderedList6() = doTest(
-        markdown =
-            "---- A\n" +
-            "--- B\n" +
-            "-- C\n",
-        html = html { ulist { ulist { ulist {
-                        item { text("A") }
+    fun testUnorderedList6() {
+        assertTrue(runCatching { doTest(
+            markdown = """
+            ---- A
+            --- B
+            -- C          
+        """.trimIndent(),
+            html = html {
+                ulist {
+                    ulist {
+                        ulist {
+                            item { text("A") }
+                        }
+                        item { text("B") }
                     }
-                    item { text("B") }
+                    item { text("C") }
                 }
-                item { text("C") }
             }
-        }
-    )
+        ) }.isFailure)
+    }
 
     @Test
     fun testUnorderedList7() = doTest(
-        markdown =
-            "## Heading 1\n" +
-            "### Heading 2\n" +
-            "some paragraph\n" +
-            "\n" +
-            "some sentence 1\n" +
-            "some sentence 2\n" +
-            "---- A\n" +
-            "--- B\n" +
-            "-- C\n" +
-            "some end paragraph\n",
+        markdown = """
+            ## Heading 1
+            ### Heading 2
+            some paragraph
+            
+            some sentence 1
+            some sentence 2
+            -- A
+            --- B
+            -- C
+            some end paragraph
+            """.trimIndent(),
         html = html {
             heading(1) { text("Heading 1") }
             heading(2) { text("Heading 2") }
@@ -241,10 +279,8 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
                 text("some sentence 2")
             }
             ulist {
+                item { text("A") }
                 ulist {
-                    ulist {
-                        item { text("A") }
-                    }
                     item { text("B") }
                 }
                 item { text("C") }
@@ -255,15 +291,16 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testHLine1() = doTest(
-        markdown =
-            "-----\n" +
-            "       -----\n" +
-            "-----      \n" +
-            "     -----     \n" +
-            "---\n" +
-            "-------\n" +
-            "test ----- \n" +
-            "-----     test\n",
+        markdown = """
+            -----
+                   -----
+            -----      
+                 -----     
+            ---
+            -------
+            test ----- 
+            -----     test
+        """.trimIndent(),
         html = html {
             hr()
             hr()
@@ -283,16 +320,17 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testHLine2() = doTest(
-        markdown =
-            "## heading 1\n" +
-            "-----\n" +
-            "some text 1\n" +
-            "-----\n" +
-            "some text 2\n" +
-            "-- A\n" +
-            "--- B\n" +
-            "-----\n" +
-            "--- C\n",
+        markdown = """
+            ## heading 1
+            -----
+            some text 1
+            -----
+            some text 2
+            -- A
+            --- B
+            -----
+            -- C
+            """.trimIndent(),
         html = html {
             heading(1) { text("heading 1") }
             hr()
@@ -304,15 +342,16 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
                 ulist { item { text("B") } }
             }
             hr()
-            ulist { ulist { item { text("C") } } }
+            ulist { item { text("C") } }
         }
     )
 
     @Test
     fun testOrderedList1() = doTest(
-        markdown =
-            "1.. A\n" +
-            "1.. B\n",
+        markdown = """
+            1.. A
+            1.. B
+            """.trimIndent(),
         html = html { olist(1) {
             item { text("A") }
             item { text("B") }
@@ -321,10 +360,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testOrderedList2() = doTest(
-        markdown =
-            "1.. A\n" +
-            "2... B\n" +
-            "1.. C\n",
+        markdown = """
+            1.. A
+            2... B
+            1.. C
+            """.trimIndent(),
         html = html { olist(1) {
             item { text("A") }
             olist(2) { item { text("B") } }
@@ -334,10 +374,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testOrderedList3() = doTest(
-        markdown =
-            "1.. A\n" +
-            "2... B\n" +
-            "3.... C\n",
+        markdown = """
+            1.. A
+            2... B
+            3.... C
+            """.trimIndent(),
         html = html {
             olist(1) {
                 item { text("A") }
@@ -351,12 +392,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testOrderedList4() = doTest(
-        markdown =
-            "1.. A\n" +
-            "2... B\n" +
-            "3.... C\n" +
-            "2... D\n" +
-            "1.. E\n",
+        markdown = """
+            1.. A
+            2... B
+            3.... C
+            2... D
+            1.. E
+            """.trimIndent(),
         html = html {
             olist(1) {
                 item { text("A") }
@@ -372,11 +414,12 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
 
     @Test
     fun testOrderedList5() = doTest(
-        markdown =
-            "1.. A\n" +
-            "2... B\n" +
-            "3.... C\n" +
-            "1.. D\n",
+        markdown = """
+            1.. A
+            2... B
+            3.... C
+            1.. D
+        """.trimIndent(),
         html = html {
             olist(1) {
                 item { text("A") }
@@ -392,10 +435,11 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     @Test
     fun testOrderedList6() {
         assertTrue(runCatching { doTest(
-            markdown =
-                "3.... A\n" +
-                "2... B\n" +
-                "1.. C\n",
+            markdown = """
+                3.... A
+                2... B
+                1.. C
+            """.trimIndent(),
             html = html {
                 olist(3) {
                     olist(2) {
