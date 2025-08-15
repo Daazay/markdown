@@ -30,11 +30,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             # not heading 1
             ######## not heading 2
             """.trimIndent(),
-        html = html { paragraph {
-            text("# not heading 1")
-            br()
-            text("######## not heading 2")
-        } }
+        html = html {
+                paragraph {
+                text("# not heading 1")
+                br()
+                text("######## not heading 2")
+            }
+        }
     )
 
     @Test
@@ -44,43 +46,85 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             ##123
             ##abc
         """.trimIndent(),
-        html = html { paragraph {
-            text("##")
-            br()
-            text("##123")
-            br()
-            text("##abc")
-        } }
+        html = html {
+            paragraph {
+                text("##")
+                br()
+                text("##123")
+                br()
+                text("##abc")
+            }
+        }
     )
 
     @Test
     fun testHeadings4() = doTest(
-        markdown = "## **strong**",
-        html = html { heading(1) { bold { text("strong") } } }
+        markdown = "##              heading            \n",
+        html = html {
+            heading(1) { text("heading") }
+        }
     )
 
     @Test
     fun testHeadings5() = doTest(
-        markdown = "##              heading            \n",
-        html = html { heading(1) { text("heading") } }
+        markdown = "           ## heading\n",
+        html = html {
+            heading(1) { text("heading") }
+        }
     )
 
     @Test
     fun testHeadings6() = doTest(
-        markdown = "           ## heading\n",
-        html = html { heading(1) { text("heading") } }
+        markdown = "## heading ##      hashes\n",
+        html = html {
+            heading(1) { text("heading ## hashes") }
+        }
     )
 
     @Test
-    fun testHeadings7() = doTest(
-        markdown = "## heading ##      hashes\n",
-        html = html { heading(1) { text("heading ## hashes") } }
+    fun testHeading7() = doTest(
+        markdown = "## **bold** __italic__ ~~strike~~ ++underline++",
+        html = html {
+            heading(1) {
+                bold { text("bold") }
+                text(" ")
+                italic { text("italic") }
+                text(" ")
+                strike { text("strike") }
+                text(" ")
+                underline { text("underline") }
+            }
+        }
+    )
+
+    @Test
+    fun testHeading8() = doTest(
+        markdown = "## **bold __italic ~~strike ++underline++~~__**",
+        html = html {
+            heading(1) {
+                bold {
+                    text("bold")
+                    text(" ")
+                    italic {
+                        text("italic")
+                        text(" ")
+                        strike {
+                            text("strike")
+                            text(" ")
+                            underline { text("underline") }
+                        }
+                    }
+                }
+            }
+        }
     )
 
     @Test
     fun testParagraph1() = doTest(
         markdown = "some text",
-        html = html { paragraph { text("some text") } }
+        html = html {
+            paragraph { text("some text") }
+        }
     )
 
     @Test
@@ -89,11 +133,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             some text
             some text
         """.trimMargin(),
-        html = html { paragraph {
-            text("some text")
-            br()
-            text("some text")
-        } }
+        html = html {
+                paragraph {
+                text("some text")
+                br()
+                text("some text")
+            }
+        }
     )
 
     @Test
@@ -148,15 +194,159 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     )
 
     @Test
+    fun testParagraph6() = doTest(
+        markdown = "This is **bold** and __italic__ text with ~~strikethrough~~ and ++underline++.",
+        html = html {
+            paragraph {
+                text("This is ")
+                bold { text("bold") }
+                text(" and ")
+                italic { text("italic") }
+                text(" text with ")
+                strike { text("strikethrough") }
+                text(" and ")
+                underline { text("underline") }
+                text(".")
+            }
+        }
+    )
+
+    @Test
+    fun testParagraph7() = doTest(
+        markdown = """
+            First line with **bold**.
+            Second line with __italic__.
+            Third line with ~~strike~~.
+            """.trimIndent(),
+        html = html {
+            paragraph {
+                text("First line with ")
+                bold { text("bold") }
+                text(".")
+                br()
+                text("Second line with ")
+                italic { text("italic") }
+                text(".")
+                br()
+                text("Third line with ")
+                strike { text("strike") }
+                text(".")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting1() = doTest(
+        markdown = "This is **bold text** in a sentence.",
+        html = html {
+            paragraph {
+                text("This is ")
+                bold { text("bold text") }
+                text(" in a sentence.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting2() = doTest(
+        markdown = "This is __italic text__ in a sentence.",
+        html = html {
+            paragraph {
+                text("This is ")
+                italic { text("italic text") }
+                text(" in a sentence.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting3() = doTest(
+        markdown = "This is ~~strikethrough text~~ in a sentence.",
+        html = html {
+            paragraph {
+                text("This is ")
+                strike { text("strikethrough text") }
+                text(" in a sentence.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting4() = doTest(
+        markdown = "This is ++underlined text++ in a sentence.",
+        html = html {
+            paragraph {
+                text("This is ")
+                underline { text("underlined text") }
+                text(" in a sentence.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting5() = doTest(
+        markdown = "This is **bold with __italic inside__** text.",
+        html = html {
+            paragraph {
+                text("This is ")
+                bold {
+                    text("bold with ")
+                    italic { text("italic inside") }
+                }
+                text(" text.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting6() = doTest(
+        markdown = "**Bold** __Italic__ ~~Strike~~ ++Underline++",
+        html = html {
+            paragraph {
+                bold { text("Bold") }
+                text(" ")
+                italic { text("Italic") }
+                text(" ")
+                strike { text("Strike") }
+                text(" ")
+                underline { text("Underline") }
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting7() = doTest(
+        markdown = "This is \\**not bold\\** and \\__not italic\\__.",
+        html = html {
+            paragraph {
+                text("This is **not bold** and __not italic__.")
+            }
+        }
+    )
+
+    @Test
+    fun testInlineFormatting8() = doTest(
+        markdown = "This is **unclosed bold __with italic__",
+        html = html {
+            paragraph {
+                text("This is **unclosed bold ")
+                italic { text("with italic") }
+            }
+        }
+    )
+
+    @Test
     fun testUnorderedList1() = doTest(
         markdown = """
             -- A
             -- B
         """.trimIndent(),
-        html = html { ulist {
-            item { text("A") }
-            item { text("B") }
-        } }
+        html = html {
+                ulist {
+                item { text("A") }
+                item { text("B") }
+            }
+        }
     )
 
     @Test
@@ -166,11 +356,14 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             --- B
             -- C
             """.trimIndent(),
-        html = html { ulist {
-            item { text("A") }
-            ulist { item { text("B") } }
-            item { text("C") }
-        } }
+        html = html {
+                ulist {
+                    item { text("A") }
+                    ulist { item { text("B") } }
+                    item { text("C")
+                }
+            }
+        }
     )
 
     @Test
@@ -258,34 +451,18 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     @Test
     fun testUnorderedList7() = doTest(
         markdown = """
-            ## Heading 1
-            ### Heading 2
-            some paragraph
-            
-            some sentence 1
-            some sentence 2
-            -- A
-            --- B
-            -- C
-            some end paragraph
-            """.trimIndent(),
+            -- **Bold item**
+            --- __Italic nested item__
+            -- ~~Strike item~~
+        """.trimIndent(),
         html = html {
-            heading(1) { text("Heading 1") }
-            heading(2) { text("Heading 2") }
-            paragraph { text("some paragraph") }
-            paragraph {
-                text("some sentence 1")
-                br()
-                text("some sentence 2")
-            }
             ulist {
-                item { text("A") }
+                item { bold { text("Bold item") } }
                 ulist {
-                    item { text("B") }
+                    item { italic { text("Italic nested item") } }
                 }
-                item { text("C") }
+                item { strike { text("Strike item") } }
             }
-            paragraph { text("some end paragraph") }
         }
     )
 
@@ -347,15 +524,35 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     )
 
     @Test
+    fun testHLine3() = doTest(
+        markdown = """
+            -----
+            -----
+            -----
+            -----
+            -----
+        """.trimIndent(),
+        html = html {
+            hr()
+            hr()
+            hr()
+            hr()
+            hr()
+        }
+    )
+
+    @Test
     fun testOrderedList1() = doTest(
         markdown = """
             1.. A
             1.. B
             """.trimIndent(),
-        html = html { olist(1) {
-            item { text("A") }
-            item { text("B") }
-        } }
+        html = html {
+            olist(1) {
+                item { text("A") }
+                item { text("B") }
+            }
+        }
     )
 
     @Test
@@ -365,11 +562,13 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             2... B
             1.. C
             """.trimIndent(),
-        html = html { olist(1) {
-            item { text("A") }
-            olist(2) { item { text("B") } }
-            item { text("C") }
-        } }
+        html = html {
+            olist(1) {
+                item { text("A") }
+                olist(2) { item { text("B") } }
+                item { text("C") }
+            }
+        }
     )
 
     @Test
@@ -451,4 +650,111 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
             }
         ) }.isFailure)
     }
+
+    @Test
+    fun testOrderedList7() = doTest(
+        markdown = """
+            1.. **Bold item**
+            2... __Italic nested item__
+            1.. ~~Strike item~~
+        """.trimIndent(),
+        html = html {
+            olist(1) {
+                item {
+                    bold { text("Bold item") }
+                }
+                olist(2) {
+                    item {
+                        italic { text("Italic nested item") }
+                    }
+                }
+                item {
+                    strike { text("Strike item") }
+                }
+            }
+        }
+    )
+
+    @Test
+    fun testOrderedList8() = doTest(
+        markdown = """
+            5.. Item A
+            6.. Item B
+            7.. Item C
+        """.trimIndent(),
+        html = html {
+            olist(5) {
+                item { text("Item A") }
+                item { text("Item B") }
+                item { text("Item C") }
+            }
+        }
+    )
+
+    @Test
+    fun testMixedContent1() = doTest(
+        markdown = """
+            ## Main Heading
+
+            This is a **paragraph** with __mixed__ formatting.
+
+            -----
+
+            -- List item 1
+            --- Nested item
+            -- List item 2
+
+            Another paragraph with ~~strikethrough~~ text.
+
+            ### Sub Heading
+
+            1.. Ordered item
+            2... Nested ordered
+            1.. Back to top level
+
+            Final paragraph with ++underline++.
+        """.trimIndent(),
+        html = html {
+            heading(1) { text("Main Heading") }
+            paragraph {
+                text("This is a ")
+                bold { text("paragraph") }
+                text(" with ")
+                italic { text("mixed") }
+                text(" formatting.")
+            }
+            hr()
+            ulist {
+                item { text("List item 1") }
+                ulist { item { text("Nested item") } }
+                item { text("List item 2") }
+            }
+            paragraph {
+                text("Another paragraph with ")
+                strike { text("strikethrough") }
+                text(" text.")
+            }
+            heading(2) { text("Sub Heading") }
+            olist(1) {
+                item { text("Ordered item") }
+                olist(2) { item { text("Nested ordered") } }
+                item { text("Back to top level") }
+            }
+            paragraph {
+                text("Final paragraph with ")
+                underline { text("underline") }
+                text(".")
+            }
+        }
+    )
+
+    @Test
+    fun testEdgeCaseWhitespace() = doTest(
+        markdown = """
+
+
+
+        """.trimIndent(),
+        html = html { }
+    )
 }

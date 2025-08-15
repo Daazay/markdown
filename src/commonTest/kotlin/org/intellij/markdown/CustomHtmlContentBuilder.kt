@@ -47,9 +47,9 @@ open class CustomFormattedContentBuilder: CustomHtmlBaseBuilder(), CustomFormatt
             .append("</$tag>")
     }
 
-    override fun bold(block: CustomFormattedContent.() -> Unit)      = wrap("b", block)
-    override fun italic(block: CustomFormattedContent.() -> Unit)    = wrap("i", block)
-    override fun strike(block: CustomFormattedContent.() -> Unit)    = wrap("del", block)
+    override fun bold(block: CustomFormattedContent.() -> Unit) = wrap("b", block)
+    override fun italic(block: CustomFormattedContent.() -> Unit) = wrap("i", block)
+    override fun strike(block: CustomFormattedContent.() -> Unit) = wrap("del", block)
     override fun underline(block: CustomFormattedContent.() -> Unit) = wrap("u", block)
 }
 
@@ -95,10 +95,10 @@ class CustomUListContentBuilder(
     private val margin: Int,
     private val nested: Boolean = false
 ) : CustomListContentBuilder(margin) {
-    override fun toString(): String = "<ul${ 
-        if (!nested) " style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\""
-        else ""
-    }>$sb</ul>"
+    override fun toString(): String {
+        val style = if (!nested) " style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\"" else ""
+        return "<ul$style>$sb</ul>"
+    }
 }
 
 @HtmlDsl
@@ -107,10 +107,10 @@ class CustomOListContentBuilder(
     private val start: Int,
     private val nested: Boolean,
 ) : CustomListContentBuilder(margin) {
-    override fun toString(): String = "<ol start=\"$start\"${
-        if (!nested) " style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\""
-        else ""
-    }>$sb</ol>"
+    override fun toString(): String {
+        val style = if (!nested) " style=\"margin-block-start:${margin}px;margin-block-end:${margin}px\"" else ""
+        return "<ol start=\"$start\"$style>$sb</ol>"
+    }
 }
 
 class CustomHtmlContentBuilder(
