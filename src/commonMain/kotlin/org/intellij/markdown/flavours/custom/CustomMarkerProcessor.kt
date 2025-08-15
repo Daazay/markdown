@@ -2,9 +2,7 @@ package org.intellij.markdown.flavours.custom
 
 import org.intellij.markdown.flavours.custom.heading.CustomHeadingBlockProvider
 import org.intellij.markdown.flavours.custom.hline.CustomHLineBlockProvider
-import org.intellij.markdown.flavours.custom.hline.CustomHLineMarkerBlock
-import org.intellij.markdown.flavours.custom.list.CustomOrderedListBlockProvider
-import org.intellij.markdown.flavours.custom.list.CustomUnorderedListBlockProvider
+import org.intellij.markdown.flavours.custom.list.CustomListBlockProvider
 import org.intellij.markdown.flavours.custom.paragraph.CustomParagraphBlockProvider
 import org.intellij.markdown.parser.LookaheadText
 import org.intellij.markdown.parser.MarkerProcessor
@@ -20,10 +18,9 @@ class CustomMarkerProcessor(
 ) : MarkerProcessor<MarkerProcessor.StateInfo>(productionHolder, constraintsBase) {
     override var stateInfo: StateInfo = StateInfo(startConstraints, startConstraints, markersStack)
 
-    private val blockProviders: List<MarkerBlockProvider<MarkerProcessor.StateInfo>> = listOf(
+    private val blockProviders: List<MarkerBlockProvider<StateInfo>> = listOf(
         CustomHeadingBlockProvider(),
-        CustomUnorderedListBlockProvider(),
-        CustomOrderedListBlockProvider(),
+        CustomListBlockProvider(),
         CustomHLineBlockProvider(),
     )
 
@@ -31,13 +28,9 @@ class CustomMarkerProcessor(
         return blockProviders + CustomParagraphBlockProvider(blockProviders)
     }
 
-    override fun updateStateInfo(pos: LookaheadText.Position) {
-        //
-    }
+    override fun updateStateInfo(pos: LookaheadText.Position) = Unit
 
-    override fun populateConstraintsTokens(pos: LookaheadText.Position, constraints: MarkdownConstraints, productionHolder: ProductionHolder) {
-        //
-    }
+    override fun populateConstraintsTokens(pos: LookaheadText.Position, constraints: MarkdownConstraints, productionHolder: ProductionHolder)  = Unit
 
     object Factory: MarkerProcessorFactory {
         override fun createMarkerProcessor(productionHolder: ProductionHolder): MarkerProcessor<*> {

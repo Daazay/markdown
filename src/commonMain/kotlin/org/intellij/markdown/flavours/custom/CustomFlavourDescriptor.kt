@@ -8,17 +8,14 @@ import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor
 import org.intellij.markdown.flavours.custom.delimiters.CustomDelimiterParser
 import org.intellij.markdown.flavours.custom.lexer._CustomLexer
-import org.intellij.markdown.flavours.custom.list.CustomOrderedListMarkerBlock
 import org.intellij.markdown.html.*
 import org.intellij.markdown.lexer.Compat.assert
 import org.intellij.markdown.lexer.MarkdownLexer
-import org.intellij.markdown.lexer._MarkdownLexer
 import org.intellij.markdown.parser.LinkMap
 import org.intellij.markdown.parser.MarkerProcessorFactory
 import org.intellij.markdown.parser.sequentialparsers.EmphasisLikeParser
 import org.intellij.markdown.parser.sequentialparsers.SequentialParser
 import org.intellij.markdown.parser.sequentialparsers.SequentialParserManager
-import kotlin.math.asin
 
 class CustomFlavourDescriptor(
     private val margin: Int = 16,

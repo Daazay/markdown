@@ -18,8 +18,7 @@ class CustomHeadingBlockProvider : MarkerBlockProvider<MarkerProcessor.StateInfo
             CustomHeadingMarkerBlock(
                 constraints = stateInfo.currentConstraints,
                 productionHolder = productionHolder,
-                markerRange = range.first,
-                contentRange = range.second,
+                range = range
             )
         )
     }

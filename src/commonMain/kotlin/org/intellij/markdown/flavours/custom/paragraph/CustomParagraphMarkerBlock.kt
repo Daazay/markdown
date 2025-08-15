@@ -17,20 +17,28 @@ class CustomParagraphMarkerBlock(
     productionHolder: ProductionHolder,
     val interruptsParagraph: (pos: LookaheadText.Position, constraints: MarkdownConstraints) -> Boolean,
 ) : MarkerBlockImpl(constraints, productionHolder.mark()) {
+    companion object {
+        private const val MIN_EOLS_FOR_PARAGRAPH_END = 2
+    }
+
     override fun doProcessToken(pos: LookaheadText.Position, currentConstraints: MarkdownConstraints): MarkerBlock.ProcessingResult {
+        // If we're still on the same line, continue processing
         if (pos.offsetInCurrentLine != -1) {
             return MarkerBlock.ProcessingResult.CANCEL
         }
 
-        if (MarkdownParserUtil.calcNumberOfConsequentEols(pos, constraints) >= 2) {
+        // Check if we have enough consecutive empty lines to end the paragraph
+        if (MarkdownParserUtil.calcNumberOfConsequentEols(pos, constraints) >= MIN_EOLS_FOR_PARAGRAPH_END) {
             return MarkerBlock.ProcessingResult.DEFAULT
         }
 
+        // Apply constraints to the next line and check if we can merge paragraphs
         val nextLineConstraints = constraints.applyToNextLineAndAddModifiers(pos)
         if (!nextLineConstraints.upstreamWith(constraints)) {
             return MarkerBlock.ProcessingResult.DEFAULT
         }
 
+        // Check if the next line would interrupt paragraph parsing
         val posToCheck = pos.nextPosition(1 + nextLineConstraints.getCharsEaten(pos.currentLine))
         if (posToCheck == null || interruptsParagraph(posToCheck, nextLineConstraints)) {
             return MarkerBlock.ProcessingResult.DEFAULT

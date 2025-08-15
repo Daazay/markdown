@@ -467,77 +467,20 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
     )
 
     @Test
-    fun testHLine1() = doTest(
+    fun testUnorderedList9() = doTest(
         markdown = """
-            -----
-                   -----
-            -----      
-                 -----     
-            ---
-            -------
-            test ----- 
-            -----     test
+            -- Item A
+            1... Item B
+            -- Item C
         """.trimIndent(),
         html = html {
-            hr()
-            hr()
-            hr()
-            hr()
-            paragraph {
-                text("---")
-                br()
-                text("-------")
-                br()
-                text("test -----")
-                br()
-                text("----- test")
-            }
-        }
-    )
-
-    @Test
-    fun testHLine2() = doTest(
-        markdown = """
-            ## heading 1
-            -----
-            some text 1
-            -----
-            some text 2
-            -- A
-            --- B
-            -----
-            -- C
-            """.trimIndent(),
-        html = html {
-            heading(1) { text("heading 1") }
-            hr()
-            paragraph { text("some text 1") }
-            hr()
-            paragraph { text("some text 2") }
             ulist {
-                item { text("A") }
-                ulist { item { text("B") } }
+                item { text("Item A") }
+                olist(1) {
+                    item { text("Item B") }
+                }
+                item { text("Item C") }
             }
-            hr()
-            ulist { item { text("C") } }
-        }
-    )
-
-    @Test
-    fun testHLine3() = doTest(
-        markdown = """
-            -----
-            -----
-            -----
-            -----
-            -----
-        """.trimIndent(),
-        html = html {
-            hr()
-            hr()
-            hr()
-            hr()
-            hr()
         }
     )
 
@@ -688,6 +631,99 @@ class CustomSpecTest : SpecTest(org.intellij.markdown.flavours.custom.CustomFlav
                 item { text("Item B") }
                 item { text("Item C") }
             }
+        }
+    )
+
+    @Test
+    fun testOrderedList9() = doTest(
+        markdown = """
+            1.. Item A
+            --- Item B
+            2.. Item C
+        """.trimIndent(),
+        html = html {
+            olist(1) {
+                item { text("Item A") }
+                ulist {
+                    item { text("Item B") }
+                }
+                item { text("Item C") }
+            }
+        }
+    )
+
+    @Test
+    fun testHLine1() = doTest(
+        markdown = """
+            -----
+                   -----
+            -----      
+                 -----     
+            ---
+            -------
+            test ----- 
+            -----     test
+        """.trimIndent(),
+        html = html {
+            hr()
+            hr()
+            hr()
+            hr()
+            paragraph {
+                text("---")
+                br()
+                text("-------")
+                br()
+                text("test -----")
+                br()
+                text("----- test")
+            }
+        }
+    )
+
+    @Test
+    fun testHLine2() = doTest(
+        markdown = """
+            ## heading 1
+            -----
+            some text 1
+            -----
+            some text 2
+            -- A
+            --- B
+            -----
+            -- C
+            """.trimIndent(),
+        html = html {
+            heading(1) { text("heading 1") }
+            hr()
+            paragraph { text("some text 1") }
+            hr()
+            paragraph { text("some text 2") }
+            ulist {
+                item { text("A") }
+                ulist { item { text("B") } }
+            }
+            hr()
+            ulist { item { text("C") } }
+        }
+    )
+
+    @Test
+    fun testHLine3() = doTest(
+        markdown = """
+            -----
+            -----
+            -----
+            -----
+            -----
+        """.trimIndent(),
+        html = html {
+            hr()
+            hr()
+            hr()
+            hr()
+            hr()
         }
     )
 

@@ -1,7 +1,6 @@
 package org.intellij.markdown.flavours.custom.hline
 
 import org.intellij.markdown.IElementType
-import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.parser.LookaheadText
 import org.intellij.markdown.parser.ProductionHolder
@@ -26,23 +25,27 @@ class CustomHLineMarkerBlock(
     override fun allowsSubBlocks(): Boolean = false
 
     companion object {
+        private const val REQUIRED_DASH_COUNT = 5
+
         fun match(pos: LookaheadText.Position): Boolean {
             val line = pos.currentLine
 
-            // trim leading whitespaces
+            // Skip leading whitespace
             var offset = line.takeWhile { it.isWhitespace() }.length
 
-            // count dashes
-            var dashesCount = 0
-            while (offset < line.length && line[offset] == '-' && dashesCount < 5) {
+            // Count consecutive dash characters
+            var dashCount = 0
+            while (offset < line.length && line[offset] == '-' && dashCount < REQUIRED_DASH_COUNT) {
                 offset++
-                dashesCount++
+                dashCount++
             }
 
-            if (dashesCount != 5) {
+            // Must have exactly the required number of dashes
+            if (dashCount != REQUIRED_DASH_COUNT) {
                 return false
             }
 
+            // The rest of the line must be blank (only whitespace or empty)
             if (line.substring(offset).isNotBlank()) {
                 return false
             }

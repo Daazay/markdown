@@ -14,25 +14,21 @@ class CustomParagraphBlockProvider(
         if (pos.currentLine.isBlank()) {
             return emptyList()
         }
-        return listOf(CustomParagraphMarkerBlock(
-            constraints = stateInfo.currentConstraints,
-            productionHolder = productionHolder,
-            interruptsParagraph = checkIfInterruptsParagraph
-        ))
+        return listOf(
+            CustomParagraphMarkerBlock(
+                constraints = stateInfo.currentConstraints,
+                productionHolder = productionHolder,
+                interruptsParagraph = checkIfInterruptsParagraph
+            )
+        )
     }
 
-    override fun interruptsParagraph(pos: LookaheadText.Position, constraints: MarkdownConstraints): Boolean {
-        return false
-    }
+    override fun interruptsParagraph(pos: LookaheadText.Position, constraints: MarkdownConstraints): Boolean
+            = false
 
     private val checkIfInterruptsParagraph: (pos: LookaheadText.Position, constraints: MarkdownConstraints) -> Boolean = { pos, constraints ->
-        var result = false
-        for (provider in blockProviders) {
-            if (provider.interruptsParagraph(pos, constraints)) {
-                result = true
-                break
-            }
+        blockProviders.any { provider ->
+            provider.interruptsParagraph(pos, constraints)
         }
-        result
     }
 }

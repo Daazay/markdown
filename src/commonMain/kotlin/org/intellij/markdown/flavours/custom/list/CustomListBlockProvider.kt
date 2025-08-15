@@ -7,20 +7,23 @@ import org.intellij.markdown.parser.constraints.MarkdownConstraints
 import org.intellij.markdown.parser.markerblocks.MarkerBlock
 import org.intellij.markdown.parser.markerblocks.MarkerBlockProvider
 
-class CustomOrderedListBlockProvider : MarkerBlockProvider<MarkerProcessor.StateInfo> {
+class CustomListBlockProvider : MarkerBlockProvider<MarkerProcessor.StateInfo> {
     override fun createMarkerBlocks(pos: LookaheadText.Position, productionHolder: ProductionHolder, stateInfo: MarkerProcessor.StateInfo): List<MarkerBlock> {
-        val range = CustomOrderedListMarkerBlock.match(pos) ?: return emptyList()
+        val matched = CustomListMarkerBlock.match(pos) ?: return emptyList()
+        val (type, range) = matched
+
         return listOf<MarkerBlock>(
-            CustomOrderedListMarkerBlock(
+            CustomListMarkerBlock(
                 pos = pos,
                 constraints = stateInfo.currentConstraints,
                 productionHolder = productionHolder,
+                listType = type,
                 initialItemRange = range,
             )
         )
     }
 
     override fun interruptsParagraph(pos: LookaheadText.Position, constraints: MarkdownConstraints): Boolean {
-        return CustomOrderedListMarkerBlock.match(pos) != null
+        return CustomListMarkerBlock.match(pos) != null
     }
 }
